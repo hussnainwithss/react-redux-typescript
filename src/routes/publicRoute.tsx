@@ -1,18 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
-import { PrivatePublicRouteProps } from 'routes/privateRoute';
 import { State } from 'store/reducer';
 
 const PublicRoute = ({
     isAuthenticated,
     component: Component,
     ...rest
-}: PrivatePublicRouteProps) => {
+}: any) => {
     return (
         <Route
             {...rest}
-            render={(props) =>
+            render={(props: any) =>
                 isAuthenticated ? <Redirect to='/' /> : <Component {...props} />
             }
         />

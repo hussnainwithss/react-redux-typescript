@@ -1,19 +1,22 @@
-import { AnyAction, combineReducers, EmptyObject } from 'redux';
+import { combineReducers } from 'redux';
+import auth from 'pages/Auth/ducks/reducer';
+import posts from 'pages/Profile/ducks/reducer';
 
 export interface AuthState {
-  isAuthenticated: boolean;
-  token: string;
+    isAuthenticated: boolean;
+    token: string;
 }
 
 export interface State {
-  auth: AuthState
+    auth: AuthState;
 }
 const combinedReducer = combineReducers({
- 
+    auth,
+    posts,
 });
 
-const rootReducer= (state:EmptyObject|undefined, action:AnyAction) => {
-  return combinedReducer(state, action);
+const rootReducer = (state: any, action: any) => {
+    return combinedReducer(state, action);
 };
 
 export default rootReducer;
