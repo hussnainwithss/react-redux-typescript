@@ -4,7 +4,7 @@ import {
     ADD_USER_POST,
 } from 'pages/Profile/ducks/action-types';
 
-import { Post } from 'pages/Profile/ducks/actions';
+import { Post } from 'pages/Profile/types';
 
 interface IState {
     posts: Post[];

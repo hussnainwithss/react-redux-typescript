@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Formik, Form } from 'formik';
+import { Formik, Form, FormikHelpers, FormikErrors } from 'formik';
 import { AxiosResponse, AxiosError } from 'axios';
 import { connect } from 'react-redux';
 import { Modal, Form as FormBS, Alert, Spinner } from 'react-bootstrap';
@@ -14,46 +14,42 @@ import {
 } from 'components/UserCoverPicture/style';
 import { FilledButton } from 'elements/Button';
 import cover from 'assets/img/cover.png';
+import {
+    FormValues,
+    CoverPictureProps,
+    UserCoverPictureProps,
+} from 'components/UserCoverPicture/types';
 
-interface InitialValuesTypes {
-    cover_picture: File | null;
-}
-
-const CoverPicture = ({ picture }: { picture: string }) => {
+const CoverPicture: React.FC<CoverPictureProps> = (
+    props: CoverPictureProps
+) => {
+    const { picture } = props;
     return <CoverImage className='w-100 ' src={picture || cover} />;
 };
 
-const UserCoverPicture = ({
-    user,
-    updateCoverPicture,
-    allowEdit,
-}: {
-    user: any;
-    updateCoverPicture: any;
-    allowEdit: boolean;
-}) => {
-    const initialValues: InitialValuesTypes = { cover_picture: null };
+const UserCoverPicture: React.FC<UserCoverPictureProps> = (
+    props: UserCoverPictureProps
+) => {
+    const { allowEdit, user, updateCoverPicture } = props;
+    const initialValues: FormValues = { cover_picture: null };
     const validationSchema = Yup.object({
         cover_picture: Yup.mixed().required(
             'Please Select Cover Picture First'
         ),
     });
-    const [showCoverPictureModal, setShowCoverPictureModal] = useState(false);
+    const [showCoverPictureModal, setShowCoverPictureModal] =
+        useState<boolean>(false);
     const handleCoverPictureUploadModalShow = () =>
         setShowCoverPictureModal(true);
     const handleCoverPictureUploadModalClose = () =>
         setShowCoverPictureModal(false);
 
     const coverPictureUploadHandler = (
-        values: InitialValuesTypes,
-        {
-            setErrors,
-            setSubmitting,
-            setStatus,
-        }: { setErrors: any; setSubmitting: any; setStatus: any }
+        values: FormValues,
+        { setErrors, setSubmitting, setStatus }: FormikHelpers<FormValues>
     ) => {
         const { cover_picture } = values;
-        updateCoverPicture(cover_picture)
+        updateCoverPicture(cover_picture as File)
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             .then((response: AxiosResponse) => {
                 setStatus({
@@ -66,7 +62,7 @@ const UserCoverPicture = ({
                 }, 1000);
             })
             .catch((error: AxiosError) => {
-                const fieldErrors: Record<string, string> = {
+                const fieldErrors: FormikErrors<FormValues> = {
                     cover_picture: '',
                 };
                 if (error && error.message) {
@@ -187,4 +183,6 @@ const mapDispatchToProps = (dispatch: any) => {
             dispatch(updateUserCoverPictureAction(cover_picture)),
     };
 };
-export default connect(null, mapDispatchToProps)(UserCoverPicture);
+
+export const connector = connect(null, mapDispatchToProps);
+export default connector(UserCoverPicture);

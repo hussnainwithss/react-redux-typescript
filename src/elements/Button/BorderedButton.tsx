@@ -1,9 +1,21 @@
 import React, { memo } from 'react';
 import { Button } from 'react-bootstrap';
+import { ButtonProps } from 'elements/Button/types';
 
-const BorderedButton = ({ children, ...rest }: { children: React.FC<any> }) => {
+const BorderedButton: React.FC<ButtonProps> = ({
+    children,
+    variant,
+    type,
+    disabled,
+    onClick,
+}: ButtonProps) => {
     return (
-        <Button variant='outline-dark' {...rest}>
+        <Button
+            variant={variant}
+            type={type}
+            disabled={disabled}
+            onClick={onClick}
+        >
             {children}
         </Button>
     );

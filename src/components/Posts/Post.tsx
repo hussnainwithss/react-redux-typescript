@@ -6,16 +6,10 @@ import {
     ProfileBadgeText,
     TimeStamp,
 } from 'components/Posts/style';
+import { Props } from 'components/Posts/types';
 
-const Post = ({
-    post,
-    userName,
-    profilePicture,
-}: {
-    post: any;
-    userName: string;
-    profilePicture: string;
-}) => {
+const Post: React.FC<Props> = (props: Props) => {
+    const { post, userName, profilePicture } = props;
     return (
         <Card className='mb-3'>
             {post.feed_type === 'register' ? (

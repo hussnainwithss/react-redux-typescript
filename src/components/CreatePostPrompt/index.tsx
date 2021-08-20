@@ -1,54 +1,39 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { AxiosResponse, AxiosError } from 'axios';
-import { Formik, Form } from 'formik';
+import { Formik, Form, FormikHelpers, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 import { Card, Form as FormBS, Spinner } from 'react-bootstrap';
 import { CreatePostTextArea } from 'components/CreatePostPrompt/style';
 import { addUserPostAction } from 'pages/Profile/ducks/actions';
 import { FilledButton } from 'elements/Button';
+import { FormValues, Props } from 'components/CreatePostPrompt/types';
 
 const successNotification = 'Post Created Successfully.';
 
-interface InitialValuesTypes {
-    content: string;
-    image: null | File;
-}
-const CreatePostPrompt = ({
-    createPost,
-    setPostStatus,
-    setShowAlert,
-}: {
-    createPost?: any;
-    setPostStatus?: any;
-    setShowAlert?: any;
-}) => {
-    const initialValues: InitialValuesTypes = {
+const CreatePostPrompt: React.FC<Props> = (props: Props) => {
+    const { setPostStatus, setShowAlert, createPost } = props;
+    const initialValues: FormValues = {
         content: '',
         image: null,
     };
+
     const validationSchema = Yup.object({
         image: Yup.mixed(),
         content: Yup.string()
             .when('image', {
-                is: (val: any) => val === null,
+                is: (val: File | null) => val === null,
                 then: Yup.string().required('Post Cannot be Empty!'),
             })
             .max(255),
     });
+
     function createPostHandler(
-        values: InitialValuesTypes,
-        {
-            resetForm,
-            setSubmitting,
-            setErrors,
-        }: { resetForm: any; setSubmitting: any; setErrors: any }
+        values: FormValues,
+        helpers: FormikHelpers<FormValues>
     ) {
-        const { content, image }: InitialValuesTypes = values;
-        const fieldErrors: InitialValuesTypes = {
-            content: '',
-            image: null,
-        };
+        const { content, image }: FormValues = values;
+        const fieldErrors: FormikErrors<FormValues> = {};
 
         createPost(content, image)
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -57,11 +42,11 @@ const CreatePostPrompt = ({
                     message: successNotification,
                     type: 'success',
                 });
-                resetForm();
+                helpers.resetForm();
                 (
                     document.getElementById('post-input') as HTMLInputElement
                 ).value = '';
-                setSubmitting(false);
+                helpers.setSubmitting(false);
                 setShowAlert(true);
             })
             .catch((error: AxiosError) => {
@@ -73,8 +58,8 @@ const CreatePostPrompt = ({
                     [fieldErrors.content] = [error.response.data.content[0]];
                 if (error?.response?.data && error?.response?.data?.image)
                     [fieldErrors.image] = [error.response.data.image[0]];
-                setErrors(fieldErrors);
-                setSubmitting(false);
+                helpers.setErrors(fieldErrors);
+                helpers.setSubmitting(false);
                 setShowAlert(true);
             });
     }
@@ -164,9 +149,10 @@ const CreatePostPrompt = ({
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        createPost: (content: string, image: File) =>
+        createPost: (content: string, image: File | null) =>
             dispatch(addUserPostAction(content, image)),
     };
 };
+export const connector = connect(null, mapDispatchToProps);
 
-export default connect(null, mapDispatchToProps)(CreatePostPrompt);
+export default connector(CreatePostPrompt);

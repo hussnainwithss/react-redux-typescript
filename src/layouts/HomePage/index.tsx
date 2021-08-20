@@ -2,9 +2,10 @@ import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import Header from 'components/Header';
 import Welcome from 'components/Welcome';
+import { layoutProps } from 'layouts/types';
 
-const HomePage = (Content: React.FC<any>) => {
-    return (props: any) => {
+const HomePage = (Content: React.FC<layoutProps>) => {
+    return (props: layoutProps) => {
         const { history } = props;
         return (
             <>

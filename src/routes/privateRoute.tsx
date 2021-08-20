@@ -2,18 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 import { State } from 'store/reducer';
+import { PrivatePublicRouteProps } from 'routes/types';
 
-export interface PrivatePublicRouteProps {
-    isAuthenticated?: boolean;
-    component: React.FC<any>;
-    exact?: boolean;
-    props?: any;
-}
-const PrivateRoute = ({
+const PrivateRoute: React.FC<PrivatePublicRouteProps> = ({
     isAuthenticated,
     component: Component,
     ...rest
-}: any) => {
+}: PrivatePublicRouteProps) => {
     return (
         // Show the component only when the user is logged in
         // Otherwise, redirect the user to /signin page

@@ -2,24 +2,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form as FormBS, Spinner } from 'react-bootstrap';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, FormikHelpers, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'elements/Form';
 import { RegistrationFormDiv } from 'components/RegistrationForm/style';
 import { FilledButton } from 'elements/Button';
 import { registerUserAction } from 'pages/Auth/ducks/actions';
 import { AppRoutes } from 'routes';
+import { FormValues, Props } from 'components/RegistrationForm/types';
+import { AxiosError, AxiosResponse } from 'axios';
 
-const RegistrationForm = ({
-    registerUser,
-    history,
-}: {
-    registerUser: any;
-    history: any;
-}) => {
+const RegistrationForm: React.FC<Props> = (props: Props) => {
+    const { registerUser, history } = props;
     const today = new Date().toDateString();
-    const GENDER_OPTIONS = ['Male', 'Female', 'Others'];
-    const initialValues = {
+    const GENDER_OPTIONS: string[] = ['Male', 'Female', 'Others'];
+    const initialValues: FormValues = {
         email: '',
         password: '',
         confirm_password: '',
@@ -28,36 +25,20 @@ const RegistrationForm = ({
         gender: '',
         birthday: '',
     };
+
     const handleSubmit = (
-        values: any,
-        { setErrors, setSubmitting }: { setErrors: any; setSubmitting: any }
+        values: FormValues,
+        { setErrors, setSubmitting }: FormikHelpers<FormValues>
     ) => {
-        const {
-            email,
-            password,
-            confirm_password,
-            first_name,
-            last_name,
-            gender,
-            birthday,
-        } = values;
-        registerUser(
-            email,
-            password,
-            confirm_password,
-            first_name,
-            last_name,
-            gender,
-            birthday
-        )
-            .then((resp: any) => {
+        registerUser(values)
+            .then((resp: AxiosResponse) => {
                 if (resp) {
                     history.push(AppRoutes.DASHBOARD.path);
                 }
                 setSubmitting(false);
             })
-            .catch((error: any) => {
-                const fieldError: Record<string, string> = {};
+            .catch((error: AxiosError) => {
+                const fieldError: FormikErrors<FormValues> = {};
                 if (error && error.message) {
                     console.log(error.message);
                 }
@@ -99,7 +80,7 @@ const RegistrationForm = ({
             .max(30)
             .required('Required')
             .when('password', {
-                is: (val: any) => !!(val && val.length > 0),
+                is: (val: string) => !!(val && val.length > 0),
                 then: Yup.string().oneOf(
                     [Yup.ref('password')],
                     'Password & Confirm Password Must be same'
@@ -255,15 +236,15 @@ const RegistrationForm = ({
 
 const mapDispatchToProps = (dispatch: any) => {
     return {
-        registerUser: (
-            email: string,
-            password: string,
-            confirm_password: string,
-            first_name: string,
-            last_name: string,
-            gender: string,
-            birthday: Date
-        ) =>
+        registerUser: ({
+            email,
+            password,
+            confirm_password,
+            first_name,
+            last_name,
+            gender,
+            birthday,
+        }: FormValues) =>
             dispatch(
                 registerUserAction(
                     email,
@@ -278,4 +259,5 @@ const mapDispatchToProps = (dispatch: any) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(RegistrationForm);
+export const connector = connect(null, mapDispatchToProps);
+export default connector(RegistrationForm);

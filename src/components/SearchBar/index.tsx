@@ -1,26 +1,23 @@
 import React from 'react';
-import { Formik, Form } from 'formik';
+import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { TextField } from 'elements/Form';
 import useQuery from 'utils/useQuery';
 import { AppRoutes } from 'routes';
-import { useHistory } from 'react-router';
+import { history } from 'App';
+import { FormValues } from 'components/SearchBar/types';
 
-interface InitialValuesTypes {
-    search: string;
-}
-const SearchBar = () => {
-    const history = useHistory();
+const SearchBar: React.FC = () => {
     const searchkeyword = useQuery().get('search');
-    const initialValues = {
+    const initialValues: FormValues = {
         search: searchkeyword || '',
     };
     const validationSchema = Yup.object({
         search: Yup.string().max(100).required('required'),
     });
     const handleSubmit = (
-        values: InitialValuesTypes,
-        { setSubmitting }: { setSubmitting: any }
+        values: FormValues,
+        { setSubmitting }: FormikHelpers<FormValues>
     ) => {
         const { search } = values;
         history.push(`${AppRoutes.SEARCH.path}/?search=${search}`);

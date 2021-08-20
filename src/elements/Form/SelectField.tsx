@@ -6,28 +6,26 @@ interface IProps {
     label?: string;
 }
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const SelectField = (props: IProps & FieldHookConfig<string>) => {
+const SelectField: React.FC<IProps & FieldHookConfig<string>> = (
+    props: IProps & FieldHookConfig<string>
+) => {
     const [field, meta] = useField(props);
-    console.log('props', props);
-    console.log('meta', meta);
-    console.log('field', field);
+    const { id, name, className, label, value, children } = props;
+    const { error, touched } = meta;
     return (
-        <Form.Group
-            controlId={props.id || props.name}
-            className={props.className}
-        >
-            <Form.Label>{props.label}</Form.Label>
+        <Form.Group controlId={id || name} className={className}>
+            <Form.Label>{label}</Form.Label>
             <Form.Control
                 as='select'
                 {...field}
-                name={props.name}
-                value={props.value}
-                className={meta.touched && meta.error ? 'field-error' : ''}
+                name={name}
+                value={value}
+                className={touched && error ? 'field-error' : ''}
             >
-                {props.children}
+                {children}
             </Form.Control>
-            {meta.touched && meta.error ? (
-                <Form.Text className='text-danger'>{meta.error}</Form.Text>
+            {touched && error ? (
+                <Form.Text className='text-danger'>{error}</Form.Text>
             ) : null}
         </Form.Group>
     );

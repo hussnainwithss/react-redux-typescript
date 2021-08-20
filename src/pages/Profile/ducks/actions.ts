@@ -5,12 +5,7 @@ import {
 
 import { createPost, getUserPosts } from 'api';
 import { AppDispatch } from 'store';
-
-export interface Post {
-    content?: string | null;
-    createdAt: string;
-    image?: string | null;
-}
+import { Post } from 'pages/Profile/types';
 
 export function fetchUserPosts(payload: Post[]) {
     return { type: FETCH_USER_POSTS, payload };
@@ -35,7 +30,7 @@ export const fetchUserPostsAction = () => (dispatch: AppDispatch) => {
 };
 
 export const addUserPostAction =
-    (content: string, image: File) => (dispatch: AppDispatch) => {
+    (content: string, image: File | null) => (dispatch: AppDispatch) => {
         return createPost(content, image)
             .then((resp) => {
                 if (resp) {

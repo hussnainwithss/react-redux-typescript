@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, FormikHelpers, FormikErrors } from 'formik';
 import * as Yup from 'yup';
 import {
     Card,
@@ -18,21 +18,19 @@ import { FilledButton } from 'elements/Button';
 import UserInfoAccordian from 'components/UserInfoAccordian';
 import { ProfileContainer } from 'elements/Profile';
 import ProfileImagesSection from 'components/ProfileImagesSection';
+import { Props, FormValues } from 'pages/Profile/types';
+import { AxiosError, AxiosResponse } from 'axios';
+import { RootState } from 'store';
 
 const successNotification = 'User profile has been successully updated.';
-const UpdateProfile = ({
-    user,
-    updateUserProfile,
-}: {
-    user: any;
-    updateUserProfile: any;
-}) => {
-    const [form_status, setFormStatus] = useState({
+
+const UpdateProfile: React.FC<Props> = ({ user, updateUserProfile }: Props) => {
+    const [form_status, setFormStatus] = useState<Record<string, string>>({
         type: '',
         message: '',
     });
     const RELATIONSHIP_STATUES = ['Single', 'Committed', 'Married', 'Divorced'];
-    const initialValues = {
+    const initialValues: FormValues = {
         email: user.email,
         first_name: user.first_name,
         last_name: user.last_name,
@@ -71,11 +69,12 @@ const UpdateProfile = ({
     });
 
     const handleSubmit = (
-        values: any,
-        { setErrors, setSubmitting }: { setErrors: any; setSubmitting: any }
+        values: FormValues,
+        helpers: FormikHelpers<FormValues>
     ) => {
+        const { setErrors, setSubmitting } = helpers;
         updateUserProfile(values)
-            .then((resp: any) => {
+            .then((resp: AxiosResponse) => {
                 if (resp) {
                     setFormStatus({
                         message: successNotification,
@@ -84,8 +83,21 @@ const UpdateProfile = ({
                 }
                 setSubmitting(false);
             })
-            .catch((error: any) => {
-                const fieldError: Record<string, any> = {};
+            .catch((error: AxiosError) => {
+                const fieldError: FormikErrors<FormValues> = {
+                    email: '',
+                    first_name: '',
+                    last_name: '',
+                    profile: {
+                        education: '',
+                        work: '',
+                        hometown: '',
+                        bio: '',
+                        gender: '',
+                        birthday: '',
+                        relationship_status: '',
+                    },
+                };
                 if (error && error.message) {
                     setFormStatus({ message: error.message, type: 'danger' });
                 }
@@ -101,7 +113,8 @@ const UpdateProfile = ({
                 if (
                     error.response &&
                     error.response.data.profile &&
-                    error.response.data.profile.hometown
+                    error.response.data.profile.hometown &&
+                    fieldError.profile
                 ) {
                     fieldError.profile.hometown =
                         error.response.data.profile.hometown;
@@ -109,14 +122,16 @@ const UpdateProfile = ({
                 if (
                     error.response &&
                     error.response.data.profile &&
-                    error.response.data.profile.work
+                    error.response.data.profile.work &&
+                    fieldError.profile
                 ) {
                     fieldError.profile.work = error.response.data.profile.work;
                 }
                 if (
                     error.response &&
                     error.response.data.profile &&
-                    error.response.data.profile.gender
+                    error.response.data.profile.gender &&
+                    fieldError.profile
                 ) {
                     fieldError.profile.gender =
                         error.response.data.profile.gender;
@@ -124,7 +139,8 @@ const UpdateProfile = ({
                 if (
                     error.response &&
                     error.response.data.profile &&
-                    error.response.data.profile.birthday
+                    error.response.data.profile.birthday &&
+                    fieldError.profile
                 ) {
                     fieldError.profile.birthday =
                         error.response.data.profile.birthday;
@@ -132,14 +148,16 @@ const UpdateProfile = ({
                 if (
                     error.response &&
                     error.response.data.profile &&
-                    error.response.data.profile.bio
+                    error.response.data.profile.bio &&
+                    fieldError.profile
                 ) {
                     fieldError.profile.bio = error.response.data.profile.bio;
                 }
                 if (
                     error.response &&
                     error.response.data.profile &&
-                    error.response.data.profile.education
+                    error.response.data.profile.education &&
+                    fieldError.profile
                 ) {
                     fieldError.profile.education =
                         error.response.data.profile.education;
@@ -192,7 +210,7 @@ const UpdateProfile = ({
                                                         errorClassName='text-danger'
                                                         className='mb-2'
                                                         value={
-                                                            values.first_name
+                                                            values?.first_name
                                                         }
                                                     />
                                                 </Col>
@@ -204,7 +222,9 @@ const UpdateProfile = ({
                                                         label='Last Name'
                                                         errorClassName='text-danger'
                                                         className='mb-2'
-                                                        value={values.last_name}
+                                                        value={
+                                                            values?.last_name
+                                                        }
                                                     />
                                                 </Col>
                                             </FormBS.Row>
@@ -215,7 +235,7 @@ const UpdateProfile = ({
                                                 label='E-mail Address'
                                                 errorClassName='text-danger'
                                                 className='mb-2'
-                                                value={values.email}
+                                                value={values?.email}
                                             />
                                             <TextField
                                                 type='text'
@@ -224,7 +244,9 @@ const UpdateProfile = ({
                                                 label='Hometown'
                                                 errorClassName='text-danger'
                                                 className='mb-2'
-                                                value={values.profile.hometown}
+                                                value={
+                                                    values?.profile?.hometown
+                                                }
                                             />
                                             <TextField
                                                 type='text'
@@ -233,7 +255,9 @@ const UpdateProfile = ({
                                                 label='Education'
                                                 errorClassName='text-danger'
                                                 className='mb-2'
-                                                value={values.profile.education}
+                                                value={
+                                                    values?.profile?.education
+                                                }
                                             />
                                             <TextField
                                                 type='text'
@@ -242,7 +266,7 @@ const UpdateProfile = ({
                                                 label='Work'
                                                 errorClassName='text-danger'
                                                 className='mb-2'
-                                                value={values.profile.work}
+                                                value={values?.profile?.work}
                                             />
                                             <TextField
                                                 type='text'
@@ -252,7 +276,7 @@ const UpdateProfile = ({
                                                 label='Bio'
                                                 errorClassName='text-danger'
                                                 className='mb-2'
-                                                value={values.profile.bio}
+                                                value={values?.profile?.bio}
                                             />
                                             <FormBS.Label className='mb-0'>
                                                 Gender{' '}
@@ -266,8 +290,8 @@ const UpdateProfile = ({
                                                             value='Male'
                                                             className='mr-1 form-check-input'
                                                             checked={
-                                                                values.profile
-                                                                    .gender ===
+                                                                values?.profile
+                                                                    ?.gender ===
                                                                 'Male'
                                                             }
                                                         />
@@ -282,8 +306,8 @@ const UpdateProfile = ({
                                                             value='Female'
                                                             className='mr-1 form-check-input'
                                                             checked={
-                                                                values.profile
-                                                                    .gender ===
+                                                                values?.profile
+                                                                    ?.gender ===
                                                                 'Female'
                                                             }
                                                         />
@@ -298,8 +322,8 @@ const UpdateProfile = ({
                                                             value='Others'
                                                             className='mr-1 form-check-input'
                                                             checked={
-                                                                values.profile
-                                                                    .gender ===
+                                                                values?.profile
+                                                                    ?.gender ===
                                                                 'Others'
                                                             }
                                                         />
@@ -308,9 +332,9 @@ const UpdateProfile = ({
                                                 </div>
 
                                                 {touched.profile &&
-                                                touched.profile.gender &&
-                                                errors.profile &&
-                                                errors.profile.gender ? (
+                                                touched?.profile?.gender &&
+                                                errors?.profile &&
+                                                errors?.profile?.gender ? (
                                                     <FormBS.Text className='text-danger'>
                                                         {errors.profile.gender}
                                                     </FormBS.Text>
@@ -332,12 +356,12 @@ const UpdateProfile = ({
                                                 label='Relationship Status'
                                                 name='profile.relationship_status'
                                                 value={
-                                                    values.profile
-                                                        .relationship_status ===
+                                                    values?.profile
+                                                        ?.relationship_status ===
                                                     ''
                                                         ? 'Select Relationship Status'
-                                                        : values.profile
-                                                              .relationship_status
+                                                        : values?.profile
+                                                              ?.relationship_status
                                                 }
                                                 className='mb-2'
                                             >
@@ -397,10 +421,12 @@ const mapDispatchToProps = (dispatch: any) => {
     };
 };
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: RootState) => {
     return {
         user: state.auth.user,
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UpdateProfile);
+export const connector = connect(mapStateToProps, mapDispatchToProps);
+
+export default connector(UpdateProfile);

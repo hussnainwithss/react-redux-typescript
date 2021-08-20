@@ -3,7 +3,7 @@ import Image from 'react-bootstrap/Image';
 import connected from 'assets/img/connected.png';
 import { WelcomeDiv } from 'components/Welcome/style';
 
-const Splash = () => {
+const Splash: React.FC = () => {
     return (
         <WelcomeDiv>
             <h2>UBook</h2>

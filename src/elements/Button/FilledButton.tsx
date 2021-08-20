@@ -1,27 +1,20 @@
 import React, { memo } from 'react';
 import { Button } from 'react-bootstrap';
+import { ButtonProps } from 'elements/Button/types';
 
-const FilledButton = ({
+const FilledButton: React.FC<ButtonProps> = ({
     children,
     variant,
     type,
     disabled,
     onClick,
-    ...rest
-}: {
-    children: any;
-    variant: string;
-    type?: string;
-    disabled: boolean;
-    onClick?: any;
-}) => {
+}: ButtonProps) => {
     return (
         <Button
             variant={variant}
             type={type}
             disabled={disabled}
             onClick={onClick}
-            {...rest}
         >
             {children}
         </Button>

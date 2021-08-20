@@ -3,24 +3,10 @@ import { Card, Row, Col } from 'react-bootstrap';
 import { ProfileLink, ProfileImage } from 'components/ProfileCard/style';
 import user from 'assets/img/user.png';
 import { AppRoutes } from 'routes';
+import { Props } from 'components/ProfileCard/types';
 
-const ProfileCard = ({
-    id,
-    picture,
-    name,
-    hometown,
-    age,
-    gender,
-    extras,
-}: {
-    id: string;
-    picture: string;
-    name: string;
-    hometown: string;
-    age: string | number;
-    gender: string;
-    extras: string;
-}) => {
+const ProfileCard: React.FC<Props> = (props: Props) => {
+    const { id, picture, name, hometown, age, gender, extras } = props;
     return (
         <Card className='mb-2'>
             <Card.Body>

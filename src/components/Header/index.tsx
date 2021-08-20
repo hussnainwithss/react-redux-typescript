@@ -14,23 +14,15 @@ import {
 import UserIcon from 'elements/UserIcon';
 import LoginForm from 'components/LoginForm';
 import SearchBar from 'components/SearchBar';
+import { RootState } from 'store/index';
+import { Props } from 'components/Header/types';
 /**
  * Header is a template top navigation bar of user layout
  */
 
-interface IProps {
-    userPicture: string;
-    userName: string;
-    isAuthenticated: boolean;
-    history: any;
-}
-const Header = ({
-    isAuthenticated,
-    userPicture,
-    userName,
-    history,
-}: IProps) => {
-    console.log(isAuthenticated);
+const Header: React.FC<Props> = (props: Props) => {
+    const { isAuthenticated, userPicture, userName, history } = props;
+
     return (
         <NavBar collapseOnSelect expand='lg' variant='dark'>
             <NavBar.Brand>
@@ -86,7 +78,7 @@ const Header = ({
     );
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: RootState) {
     const user_picture =
         state.auth.user && state.auth.user.profile
             ? state.auth.user.profile.profile_picture
@@ -103,4 +95,5 @@ function mapStateToProps(state: any) {
     };
 }
 
-export default connect(mapStateToProps)(Header);
+export const connector = connect(mapStateToProps);
+export default connector(Header);

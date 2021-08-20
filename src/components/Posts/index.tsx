@@ -1,19 +1,10 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
-import CreatePostPrompt from 'components/CreatePostPrompt';
 import Post from 'components/Posts/Post';
+import { PostsProps } from 'components/Posts/types';
 
-const Posts = ({
-    posts,
-    userName,
-    userProfilePicture,
-    allowPost,
-}: {
-    posts: any;
-    userName: string;
-    userProfilePicture: string;
-    allowPost: boolean;
-}) => {
+const Posts: React.FC<PostsProps> = (props: PostsProps) => {
+    const { posts, userName, userProfilePicture } = props;
     return (
         <>
             {posts && (

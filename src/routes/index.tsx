@@ -5,6 +5,7 @@ import dashboardLayout from 'layouts/Dashboard';
 import HomePageLayout from 'layouts/HomePage';
 import Logout from 'pages/Auth/Logout';
 import RegistrationForm from 'components/RegistrationForm';
+import { PATH } from 'routes/types';
 
 const ChangePassword = lazy(() => import('pages/Auth/ChangePassword'));
 const Dashboard = lazy(() => import('pages/Dashboard'));
@@ -13,15 +14,8 @@ const Search = lazy(() => import('pages/Search'));
 const PrivateRoute = lazy(() => import('routes/PrivateRoute'));
 const PublicRoute = lazy(() => import('routes/PublicRoute'));
 
-interface IRoute {
-    path: string;
-    component: React.FC<any>;
-    name: string;
-    isPublic?: boolean;
-    exact?: boolean;
-}
 export const RoutesHOC = (
-    routes: Record<string, IRoute>,
+    routes: Record<string, PATH>,
     defaultPath: string
 ) => {
     return () => (
@@ -61,7 +55,7 @@ export const DashboardRoutes = {
     },
 };
 
-export const AppRoutes: Record<string, IRoute> = {
+export const AppRoutes: Record<string, PATH> = {
     LOGIN: {
         path: '/login',
         name: 'Login',
@@ -77,7 +71,7 @@ export const AppRoutes: Record<string, IRoute> = {
     DASHBOARD: {
         path: '/',
         name: 'Dashboard',
-        component: dashboardLayout(RoutesHOC(DashboardRoutes, '/')),
+        component: dashboardLayout(Dashboard),
         isPublic: false,
     },
     UPDATE_PROFILE: {

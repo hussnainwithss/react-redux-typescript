@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form as FormBS, Spinner } from 'react-bootstrap';
-import { Formik, Form } from 'formik';
+import { Formik, Form, FormikHelpers, FormikErrors } from 'formik';
 import { AxiosError, AxiosResponse } from 'axios';
 import * as Yup from 'yup';
 import { TextField } from 'elements/Form';
@@ -9,20 +9,12 @@ import { FilledButton } from 'elements/Button';
 import { authenticateUserAction } from 'pages/Auth/ducks/actions';
 import { CheckBOXField, BottomLink } from 'components/LoginForm/style';
 import { AppRoutes } from 'routes';
+import { Props, FormValues } from 'components/LoginForm/types';
 
-interface InitialValuesTypes {
-    username: string;
-    password: string;
-    remember_me: boolean;
-}
-const LoginForm = ({
-    authenticateUser,
-    history,
-}: {
-    authenticateUser: any;
-    history: any;
-}) => {
-    const initialValues: InitialValuesTypes = {
+const LoginForm: React.FC<Props> = (props: Props) => {
+    const { authenticateUser, history } = props;
+
+    const initialValues: FormValues = {
         username: '',
         password: '',
         remember_me: false,
@@ -37,12 +29,8 @@ const LoginForm = ({
     });
 
     const handleSubmit = (
-        values: InitialValuesTypes,
-        {
-            setStatus,
-            setErrors,
-            setSubmitting,
-        }: { setStatus: any; setErrors: any; setSubmitting: any }
+        values: FormValues,
+        { setStatus, setErrors, setSubmitting }: FormikHelpers<FormValues>
     ) => {
         const { username, password, remember_me } = values;
         authenticateUser(username, password, remember_me)
@@ -54,7 +42,7 @@ const LoginForm = ({
             })
             .catch((error: AxiosError) => {
                 history.push(AppRoutes.DASHBOARD.path);
-                const fieldError = {};
+                const fieldError: FormikErrors<FormValues> = {};
                 if (error && error.message) {
                     console.log(error.message);
                 }
@@ -68,6 +56,7 @@ const LoginForm = ({
                 setSubmitting(false);
             });
     };
+
     return (
         <Formik
             initialValues={initialValues}
@@ -142,4 +131,5 @@ const mapDispatchToProps = (dispatch: any) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(LoginForm);
+export const connector = connect(null, mapDispatchToProps);
+export default connector(LoginForm);

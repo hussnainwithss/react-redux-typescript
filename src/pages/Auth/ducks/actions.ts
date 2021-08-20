@@ -72,7 +72,7 @@ export const registerUserAction =
         first_name: string,
         last_name: string,
         gender: string,
-        birthday: Date
+        birthday: string
     ) =>
     (dispatch: AppDispatch) => {
         return registerUser(

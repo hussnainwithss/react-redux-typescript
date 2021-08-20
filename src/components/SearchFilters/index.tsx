@@ -1,23 +1,17 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import { Card, Row, Col, Form as FormBS, Spinner } from 'react-bootstrap';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { SelectField } from 'elements/Form';
 import { FilledButton } from 'elements/Button';
 import { history } from 'App';
+import { Props, FormValues } from 'components/SearchFilters/types';
 
-const SearchFilters = ({
-    workFilters,
-    educationFilters,
-    hometownFilters,
-}: {
-    workFilters: string[];
-    educationFilters: string[];
-    hometownFilters: string[];
-}) => {
+const SearchFilters: React.FC<Props> = (props: Props) => {
+    const { workFilters, educationFilters, hometownFilters } = props;
     const RELATIONSHIP_STATUES = ['Single', 'Committed', 'Married', 'Divorced'];
-    const initialValues = {
+    const initialValues: FormValues = {
         hometown: '',
         work: '',
         education: '',
@@ -39,8 +33,8 @@ const SearchFilters = ({
         );
     };
     const searchFormSubmitHandler = (
-        values: any,
-        { setSubmitting }: { setSubmitting: any }
+        values: FormValues,
+        { setSubmitting }: FormikHelpers<FormValues>
     ) => {
         const { hometown, work, education, gender, relationship_status } =
             values;

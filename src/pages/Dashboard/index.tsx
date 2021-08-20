@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Row, Col, Alert } from 'react-bootstrap';
+import { AxiosError, AxiosResponse } from 'axios';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { fetchUserInfoAction } from 'pages/Auth/ducks/actions';
 import { fetchUserPostsAction } from 'pages/Profile/ducks/actions';
@@ -11,58 +12,49 @@ import UserInfoAccordian from 'components/UserInfoAccordian';
 import Posts from 'components/Posts';
 import { getUserInfo, getUserPosts } from 'api';
 import CreatePostPrompt from 'components/CreatePostPrompt';
+import { User } from 'components/ProfileImagesSection/types';
+import { RootState } from 'store';
+import { Status, Props } from 'pages/Dashboard/types';
+import { Post } from 'pages/Profile/types';
 
-const Dashboard = ({
+const Dashboard: React.FC<Props> = ({
     fetchAuthUserInfo,
     fetchAuthUserPosts,
     authUser,
     authUserPosts,
-}: {
-    fetchAuthUserInfo: any;
-    fetchAuthUserPosts: any;
-    authUser: any;
-    authUserPosts: any;
-}) => {
-    const [showAlert, setShowAlert] = useState(false);
-    const [posts, setPosts] = useState([]);
-    const [postStatus, setPostStatus] = useState({
+}: Props) => {
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+    const [posts, setPosts] = useState<Post[]>([]);
+    const [postStatus, setPostStatus] = useState<Status>({
         type: '',
         message: '',
     });
-    const [user, setUser] = useState({
-        first_name: '',
-        last_name: '',
-        email: '',
-
-        profile: {
-            profile_picture: '',
-        },
-    });
+    const [user, setUser] = useState<User>();
     const { userId }: { userId?: string | undefined } = useParams();
     const fetchPostsHandler = () => {
         if (userId) {
             getUserPosts(userId)
-                .then((response: any) => {
+                .then((response: Post[]) => {
                     setPosts(response);
                 })
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 .catch((err: any) => {});
         } else {
-            fetchAuthUserPosts().then((response: any) => response);
+            fetchAuthUserPosts().then((response: AxiosResponse) => response);
         }
     };
 
     const fetchUserHandler = () => {
         if (userId) {
             getUserInfo(userId)
-                .then((response: any) => {
+                .then((response: User) => {
                     setUser(response);
                 })
-                .catch((err: any) => {
+                .catch((err: AxiosError) => {
                     console.log(err);
                 });
         } else {
-            fetchAuthUserInfo().then((response: any) => response);
+            fetchAuthUserInfo().then((response: AxiosResponse) => response);
         }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,7 +106,6 @@ const Dashboard = ({
                                                               .profile_picture
                                                       }
                                                       posts={authUserPosts}
-                                                      allowPost
                                                   />
                                               </>
                                           )}
@@ -148,7 +139,6 @@ const Dashboard = ({
                                                               .profile_picture
                                                       }
                                                       posts={posts}
-                                                      allowPost={false}
                                                   />
                                               </>
                                           )}
@@ -162,7 +152,7 @@ const Dashboard = ({
     );
 };
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: RootState) => {
     return {
         authUser: state.auth.user,
         authUserPosts: state.posts.posts,
@@ -174,4 +164,5 @@ const mapDispatchToProps = (dispatch: any) => {
         fetchAuthUserPosts: () => dispatch(fetchUserPostsAction()),
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(Dashboard);

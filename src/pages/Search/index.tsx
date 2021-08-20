@@ -5,17 +5,18 @@ import SearchFilters from 'components/SearchFilters';
 import useQuery from 'utils/useQuery';
 import { userSearch } from 'api';
 import ProfileContainer from 'elements/Profile/ProfileContainer';
+import { User } from 'components/ProfileImagesSection/types';
 
-const Search = () => {
+const Search: React.FC = () => {
     const query = useQuery();
 
     const search_param = query.get('search');
-    const [searchResults, setSearchResults] = useState<Array<any>>([]);
-    const [hometownFilters, setHometownFilters] = useState<Array<any>>([]);
-    const [educationFilters, setEducationFilters] = useState<Array<any>>([]);
-    const [workFilters, setWorkFilters] = useState<Array<any>>([]);
+    const [searchResults, setSearchResults] = useState<User[]>([]);
+    const [hometownFilters, setHometownFilters] = useState<string[]>([]);
+    const [educationFilters, setEducationFilters] = useState<string[]>([]);
+    const [workFilters, setWorkFilters] = useState<string[]>([]);
 
-    const getFiltersFromData = (filter_name: string, data: Array<string>) => {
+    const getFiltersFromData = (filter_name: string, data: Array<User>) => {
         return data
             .map((data_obj: any) => {
                 if (filter_name in data_obj.profile)
@@ -35,7 +36,7 @@ const Search = () => {
         query.forEach((value, key) => {
             requestData[key] = value;
         });
-        userSearch(requestData).then((response: any) => {
+        userSearch(requestData).then((response: User[]) => {
             setSearchResults(response);
             setWorkFilters(getFiltersFromData('work', response));
             setEducationFilters(getFiltersFromData('education', response));
@@ -65,7 +66,7 @@ const Search = () => {
                         <div>
                             {searchResults.map((user) => (
                                 <ProfileCard
-                                    id={user.id}
+                                    id={user.id as string}
                                     picture={user.profile.profile_picture}
                                     name={`${user.first_name}  ${user.last_name}`}
                                     hometown={user.profile.hometown}
@@ -73,7 +74,7 @@ const Search = () => {
                                     gender={user.profile.gender}
                                     extras={
                                         // eslint-disable-next-line no-nested-ternary
-                                        user.education
+                                        user.profile.education
                                             ? user.profile.education
                                             : user.profile.work
                                             ? user.profile.work

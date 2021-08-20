@@ -1,8 +1,10 @@
 import React from 'react';
 import { Accordion, Card, Row, Col } from 'react-bootstrap';
 import ContextAwareToggle from 'elements/ContextAwareToggle';
+import { Props } from 'components/UserInfoAccordian/types';
 
-const UserInfoAccordian = ({ userInfo }: { userInfo: any }) => {
+const UserInfoAccordian: React.FC<Props> = (props: Props) => {
+    const { userInfo } = props;
     return (
         <Accordion defaultActiveKey='0'>
             <Card>
@@ -37,14 +39,6 @@ const UserInfoAccordian = ({ userInfo }: { userInfo: any }) => {
                             <Col md='5'>Gender:</Col>
                             <Col md='6'>{userInfo.gender}</Col>
                         </Row>
-                        {userInfo.email ? (
-                            <Row>
-                                <Col md='5'>Email:</Col>
-                                <Col md='6'>{userInfo.email}</Col>
-                            </Row>
-                        ) : (
-                            ''
-                        )}
                     </Card.Body>
                 </Accordion.Collapse>
             </Card>

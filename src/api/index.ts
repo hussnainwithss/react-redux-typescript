@@ -76,7 +76,7 @@ export const registerUser = (
     first_name: string,
     last_name: string,
     gender: string,
-    birthday: Date
+    birthday: string
 ) => {
     const data: Record<string, string | number | Date> = {
         email,
@@ -120,7 +120,7 @@ export const changeUserPassword = (
     return patchRequest(route, data);
 };
 
-export const createPost = (content: string, image: File) => {
+export const createPost = (content: string, image: File | null) => {
     const data = new FormData();
     if (content) data.append('content', content);
     if (image) data.append('image', image, image.name);

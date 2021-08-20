@@ -1,16 +1,13 @@
 import React, { useContext } from 'react';
 import { useAccordionToggle, AccordionContext, Card } from 'react-bootstrap';
 import { StyledAccordian } from 'elements/ContextAwareToggle/style';
+import { ContextAwareToggleProps } from 'elements/ContextAwareToggle/types';
 
-const ContextAwareToggle = ({
+const ContextAwareToggle: React.FC<ContextAwareToggleProps> = ({
     children,
     eventKey,
     callback,
-}: {
-    children: string;
-    eventKey: any;
-    callback?: any;
-}) => {
+}: ContextAwareToggleProps) => {
     const currentEventKey = useContext(AccordionContext);
 
     const decoratedOnClick = useAccordionToggle(
@@ -19,7 +16,6 @@ const ContextAwareToggle = ({
     );
 
     const isCurrentEventKey = currentEventKey === eventKey;
-
     return (
         <div>
             <StyledAccordian

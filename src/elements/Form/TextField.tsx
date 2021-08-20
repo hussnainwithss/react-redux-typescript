@@ -9,33 +9,37 @@ interface IProps {
     max?: string;
     as?: string;
 }
-const TextField = (props: IProps & FieldHookConfig<string>) => {
+const TextField: React.FC<IProps & FieldHookConfig<string>> = (
+    props: IProps & FieldHookConfig<string>
+) => {
     const [field, meta] = useField(props);
+    const { error, touched } = meta;
+    const {
+        id,
+        label,
+        bottomText,
+        max,
+        errorClassName,
+        name,
+        className,
+        placeholder,
+        type,
+    } = props;
     return (
-        <Form.Group
-            controlId={props.id || props.name}
-            className={props.className}
-        >
-            {props.label ? (
-                <Form.Label className='mb-0'>{props.label}</Form.Label>
-            ) : (
-                ''
-            )}
+        <Form.Group controlId={id || name} className={className}>
+            {label ? <Form.Label className='mb-0'>{label}</Form.Label> : ''}
             <Form.Control
                 {...field}
-                className={meta.touched && meta.error ? 'field-error' : ''}
-                placeholder={props.placeholder}
-                max={props.max}
-                type={props.type}
+                className={touched && error ? 'field-error' : ''}
+                placeholder={placeholder}
+                max={max}
+                type={type}
             />
-            {console.log(props)}
-            {meta.touched && meta.error ? (
-                <Form.Text className={props.errorClassName}>
-                    {meta.error}
-                </Form.Text>
+            {touched && error ? (
+                <Form.Text className={errorClassName}>{error}</Form.Text>
             ) : null}
-            {props.bottomText ? (
-                <Form.Text className='mt-0'>{props.bottomText}</Form.Text>
+            {bottomText ? (
+                <Form.Text className='mt-0'>{bottomText}</Form.Text>
             ) : (
                 ''
             )}

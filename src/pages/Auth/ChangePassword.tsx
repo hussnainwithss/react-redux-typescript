@@ -1,27 +1,28 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Card, Alert, Row, Col, Spinner } from 'react-bootstrap';
+import { AxiosResponse, AxiosError } from 'axios';
 import * as Yup from 'yup';
-import { Formik, Form } from 'formik';
+import { Formik, Form, FormikHelpers, FormikErrors } from 'formik';
 import TextField from 'elements/Form/TextField';
 import UserInfoAccordian from 'components/UserInfoAccordian';
 import { updateUserPasswordAction } from 'pages/Auth/ducks/actions';
 import { ProfileContainer } from 'elements/Profile';
 import FilledButton from 'elements/Button/FilledButton';
 import ProfileImagesSection from 'components/ProfileImagesSection';
+import { Props, FormValues } from 'pages/Auth/types';
+import { Status } from 'pages/Dashboard/types';
+import { RootState } from 'store';
 
-const ChangePassword = ({
+const ChangePassword: React.FC<Props> = ({
     updateUserPassword,
     user,
-}: {
-    updateUserPassword: any;
-    user: any;
-}) => {
-    const [form_status, setFormStatus] = useState({
+}: Props) => {
+    const [form_status, setFormStatus] = useState<Status>({
         type: '',
         message: '',
     });
-    const initialValues = {
+    const initialValues: FormValues = {
         current_password: '',
         new_password: '',
         confirm_new_password: '',
@@ -34,7 +35,7 @@ const ChangePassword = ({
             .min(8)
             .required('Required')
             .when('new_password', {
-                is: (val: any) => !!(val && val.length > 0),
+                is: (val: string) => !!(val && val.length > 0),
                 then: Yup.string().oneOf(
                     [Yup.ref('new_password')],
                     'Password & Confirm Password Must be same'
@@ -42,16 +43,13 @@ const ChangePassword = ({
             }),
     });
     const handleSubmit = (
-        values: any,
-        {
-            setErrors,
-            setSubmitting,
-            resetForm,
-        }: { setErrors: any; setSubmitting: any; resetForm: any }
+        values: FormValues,
+        helpers: FormikHelpers<FormValues>
     ) => {
+        const { setErrors, setSubmitting, resetForm } = helpers;
         const { current_password, new_password, confirm_new_password } = values;
         updateUserPassword(current_password, new_password, confirm_new_password)
-            .then((resp: any) => {
+            .then((resp: AxiosResponse) => {
                 if (resp) {
                     setFormStatus({
                         message: 'Password Successfully Changed!',
@@ -61,8 +59,8 @@ const ChangePassword = ({
                     resetForm();
                 }
             })
-            .catch((error: any) => {
-                const fieldError: Record<string, string> = {};
+            .catch((error: AxiosError) => {
+                const fieldError: FormikErrors<FormValues> = {};
                 if (error && error.message) {
                     setFormStatus({ message: error.message, type: 'danger' });
                 }
@@ -206,10 +204,11 @@ const mapDispatchToProps = (dispatch: any) => {
             ),
     };
 };
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: RootState) => {
     return {
         user: state.auth.user,
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChangePassword);
+export const connector = connect(mapStateToProps, mapDispatchToProps);
+export default connector(ChangePassword);

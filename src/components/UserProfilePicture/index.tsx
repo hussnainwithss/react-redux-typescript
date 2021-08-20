@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { AxiosResponse, AxiosError } from 'axios';
 import { Modal, Form as FormBS, Alert, Spinner } from 'react-bootstrap';
-import { Formik, Form } from 'formik';
+import { Formik, Form, FormikErrors, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import {
     ProfileImage,
@@ -14,33 +14,29 @@ import {
 } from 'components/UserProfilePicture/style';
 import { updateUserProfilePictureAction } from 'pages/Auth/ducks/actions';
 import { FilledButton } from 'elements/Button';
-import user from 'assets/img/user.png';
+import userPicture from 'assets/img/user.png';
+import {
+    FormValues,
+    UserProfilePictureProps,
+    ProfilePictureProps,
+} from 'components/UserProfilePicture/types';
 
-interface InitialValuesTypes {
-    profile_picture: File | null;
-}
-
-const ProfilePicture = ({ picture }: { picture: string | undefined }) => {
+const ProfilePicture: React.FC<ProfilePictureProps> = ({
+    picture,
+}: ProfilePictureProps) => {
     return (
         <ProfileImage
-            src={picture || user}
+            src={picture || userPicture}
             className='rounded-circle border border-light border-2 image-responsive'
         />
     );
 };
 
-const UserProfilePicture = ({
-    picture,
-    user,
-    updateProfilePicture,
-    allowEdit,
-}: {
-    picture?: string;
-    updateProfilePicture?: any;
-    allowEdit: boolean;
-    user?: any;
-}) => {
-    const initialValues = { profile_picture: null };
+const UserProfilePicture: React.FC<UserProfilePictureProps> = (
+    props: UserProfilePictureProps
+) => {
+    const { user, allowEdit, updateProfilePicture } = props;
+    const initialValues: FormValues = { profile_picture: null };
     const validationSchema = Yup.object({
         profile_picture: Yup.mixed().required(
             'Please Select Profile Picture First'
@@ -55,15 +51,11 @@ const UserProfilePicture = ({
         setShowProfilePictureModal(false);
 
     const profilePictureUploadHandler = (
-        values: InitialValuesTypes,
-        {
-            setErrors,
-            setSubmitting,
-            setStatus,
-        }: { setErrors: any; setSubmitting: any; setStatus: any }
+        values: FormValues,
+        { setErrors, setSubmitting, setStatus }: FormikHelpers<FormValues>
     ) => {
         const { profile_picture } = values;
-        updateProfilePicture(profile_picture)
+        updateProfilePicture(profile_picture as File)
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             .then((response: AxiosResponse) => {
                 setStatus({
@@ -76,7 +68,7 @@ const UserProfilePicture = ({
                 }, 1000);
             })
             .catch((error: AxiosError) => {
-                const fieldErrors: { profile_picture: string } = {
+                const fieldErrors: FormikErrors<FormValues> = {
                     profile_picture: '',
                 };
                 if (error && error.message) {
@@ -100,7 +92,9 @@ const UserProfilePicture = ({
             <ProfileDiv>
                 {!allowEdit ? (
                     <>
-                        <ProfilePicture picture={picture || undefined} />
+                        <ProfilePicture
+                            picture={user.profile.profile_picture}
+                        />
                     </>
                 ) : (
                     <>
@@ -205,4 +199,6 @@ const mapDispatchToProps = (dispatch: any) => {
             dispatch(updateUserProfilePictureAction(profile_picture)),
     };
 };
-export default connect(null, mapDispatchToProps)(UserProfilePicture);
+
+export const connector = connect(null, mapDispatchToProps);
+export default connector(UserProfilePicture);
