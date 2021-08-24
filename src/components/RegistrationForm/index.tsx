@@ -12,19 +12,43 @@ import { AppRoutes } from 'routes';
 import { FormValues, Props } from 'components/RegistrationForm/types';
 import { AxiosError, AxiosResponse } from 'axios';
 
+const GENDER_OPTIONS: string[] = ['Male', 'Female', 'Others'];
+const initialValues: FormValues = {
+    email: '',
+    password: '',
+    confirm_password: '',
+    first_name: '',
+    last_name: '',
+    gender: '',
+    birthday: '',
+};
+
 const RegistrationForm: React.FC<Props> = (props: Props) => {
     const { registerUser, history } = props;
     const today = new Date().toDateString();
-    const GENDER_OPTIONS: string[] = ['Male', 'Female', 'Others'];
-    const initialValues: FormValues = {
-        email: '',
-        password: '',
-        confirm_password: '',
-        first_name: '',
-        last_name: '',
-        gender: '',
-        birthday: '',
-    };
+
+    const validationSchema = Yup.object({
+        email: Yup.string()
+            .max(50)
+            .email('Invalid email address')
+            .required('Required'),
+        password: Yup.string().max(30).min(8).required('Required'),
+        confirm_password: Yup.string()
+            .min(8)
+            .max(30)
+            .required('Required')
+            .when('password', {
+                is: (val: string) => !!(val && val.length > 0),
+                then: Yup.string().oneOf(
+                    [Yup.ref('password')],
+                    'Password & Confirm Password Must be same'
+                ),
+            }),
+        first_name: Yup.string().max(15).required('Required'),
+        last_name: Yup.string().max(15).required('Required'),
+        birthday: Yup.date().max(today).required('Required'),
+        gender: Yup.string().required('Required').oneOf(GENDER_OPTIONS),
+    });
 
     const handleSubmit = (
         values: FormValues,
@@ -69,28 +93,6 @@ const RegistrationForm: React.FC<Props> = (props: Props) => {
             });
     };
 
-    const validationSchema = Yup.object({
-        email: Yup.string()
-            .max(50)
-            .email('Invalid email address')
-            .required('Required'),
-        password: Yup.string().max(30).min(8).required('Required'),
-        confirm_password: Yup.string()
-            .min(8)
-            .max(30)
-            .required('Required')
-            .when('password', {
-                is: (val: string) => !!(val && val.length > 0),
-                then: Yup.string().oneOf(
-                    [Yup.ref('password')],
-                    'Password & Confirm Password Must be same'
-                ),
-            }),
-        first_name: Yup.string().max(15).required('Required'),
-        last_name: Yup.string().max(15).required('Required'),
-        birthday: Yup.date().max(today).required('Required'),
-        gender: Yup.string().required('Required').oneOf(GENDER_OPTIONS),
-    });
     return (
         <RegistrationFormDiv>
             <h3>Register Now</h3>
@@ -235,6 +237,7 @@ const RegistrationForm: React.FC<Props> = (props: Props) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => {
+    console.log(typeof dispatch);
     return {
         registerUser: ({
             email,

@@ -14,33 +14,31 @@ import { Props, FormValues } from 'pages/Auth/types';
 import { Status } from 'pages/Dashboard/types';
 import { RootState } from 'store';
 
-const ChangePassword: React.FC<Props> = ({
-    updateUserPassword,
-    user,
-}: Props) => {
+const initialValues: FormValues = {
+    current_password: '',
+    new_password: '',
+    confirm_new_password: '',
+};
+const validationSchema = Yup.object({
+    current_password: Yup.string().max(30).required('Required'),
+    new_password: Yup.string().max(30).min(8).required('Required'),
+    confirm_new_password: Yup.string()
+        .max(30)
+        .min(8)
+        .required('Required')
+        .when('new_password', {
+            is: (val: string) => !!(val && val.length > 0),
+            then: Yup.string().oneOf(
+                [Yup.ref('new_password')],
+                'Password & Confirm Password Must be same'
+            ),
+        }),
+});
+
+const ChangePassword: React.FC<Props> = ({ updateUserPassword, user }) => {
     const [form_status, setFormStatus] = useState<Status>({
         type: '',
         message: '',
-    });
-    const initialValues: FormValues = {
-        current_password: '',
-        new_password: '',
-        confirm_new_password: '',
-    };
-    const validationSchema = Yup.object({
-        current_password: Yup.string().max(30).required('Required'),
-        new_password: Yup.string().max(30).min(8).required('Required'),
-        confirm_new_password: Yup.string()
-            .max(30)
-            .min(8)
-            .required('Required')
-            .when('new_password', {
-                is: (val: string) => !!(val && val.length > 0),
-                then: Yup.string().oneOf(
-                    [Yup.ref('new_password')],
-                    'Password & Confirm Password Must be same'
-                ),
-            }),
     });
     const handleSubmit = (
         values: FormValues,

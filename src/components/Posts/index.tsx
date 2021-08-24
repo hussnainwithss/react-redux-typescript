@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 import Post from 'components/Posts/Post';
 import { PostsProps } from 'components/Posts/types';
 
-const Posts: React.FC<PostsProps> = (props: PostsProps) => {
+const Posts: React.FC<PostsProps> = (props) => {
     const { posts, userName, userProfilePicture } = props;
     return (
         <>

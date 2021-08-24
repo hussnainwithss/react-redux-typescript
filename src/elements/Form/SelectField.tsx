@@ -6,9 +6,7 @@ interface IProps {
     label?: string;
 }
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const SelectField: React.FC<IProps & FieldHookConfig<string>> = (
-    props: IProps & FieldHookConfig<string>
-) => {
+const SelectField: React.FC<IProps & FieldHookConfig<string>> = (props) => {
     const [field, meta] = useField(props);
     const { id, name, className, label, value, children } = props;
     const { error, touched } = meta;

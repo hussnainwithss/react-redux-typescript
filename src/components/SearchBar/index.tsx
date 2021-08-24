@@ -7,14 +7,15 @@ import { AppRoutes } from 'routes';
 import { history } from 'App';
 import { FormValues } from 'components/SearchBar/types';
 
+const validationSchema = Yup.object({
+    search: Yup.string().max(100).required('required'),
+});
+
 const SearchBar: React.FC = () => {
     const searchkeyword = useQuery().get('search');
     const initialValues: FormValues = {
         search: searchkeyword || '',
     };
-    const validationSchema = Yup.object({
-        search: Yup.string().max(100).required('required'),
-    });
     const handleSubmit = (
         values: FormValues,
         { setSubmitting }: FormikHelpers<FormValues>

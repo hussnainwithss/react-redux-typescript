@@ -8,7 +8,7 @@ const FilledButton: React.FC<ButtonProps> = ({
     type,
     disabled,
     onClick,
-}: ButtonProps) => {
+}) => {
     return (
         <Button
             variant={variant}

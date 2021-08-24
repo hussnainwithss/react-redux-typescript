@@ -20,23 +20,18 @@ import {
     UserCoverPictureProps,
 } from 'components/UserCoverPicture/types';
 
-const CoverPicture: React.FC<CoverPictureProps> = (
-    props: CoverPictureProps
-) => {
+const initialValues: FormValues = { cover_picture: null };
+const validationSchema = Yup.object({
+    cover_picture: Yup.mixed().required('Please Select Cover Picture First'),
+});
+
+const CoverPicture: React.FC<CoverPictureProps> = (props) => {
     const { picture } = props;
     return <CoverImage className='w-100 ' src={picture || cover} />;
 };
 
-const UserCoverPicture: React.FC<UserCoverPictureProps> = (
-    props: UserCoverPictureProps
-) => {
+const UserCoverPicture: React.FC<UserCoverPictureProps> = (props) => {
     const { allowEdit, user, updateCoverPicture } = props;
-    const initialValues: FormValues = { cover_picture: null };
-    const validationSchema = Yup.object({
-        cover_picture: Yup.mixed().required(
-            'Please Select Cover Picture First'
-        ),
-    });
     const [showCoverPictureModal, setShowCoverPictureModal] =
         useState<boolean>(false);
     const handleCoverPictureUploadModalShow = () =>

@@ -1,6 +1,9 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import getRoute from 'api/routes';
 import { AppRoutes } from 'routes';
+import { RegisterUserTypes, authenticateUserProps } from 'api/types';
+import { FormValues as UpdateUserInfoParams } from 'pages/Profile/types';
+import { FormValues as UpdatePasswordParams } from 'pages/Auth/types';
 
 export const setAuthToken = (token: string) => {
     axios.defaults.headers.common.Authorization = `Token ${token}`;
@@ -78,7 +81,7 @@ export const registerUser = (
     gender: string,
     birthday: string
 ) => {
-    const data: Record<string, string | number | Date> = {
+    const data: RegisterUserTypes = {
         email,
         password,
         confirm_password,
@@ -92,7 +95,7 @@ export const registerUser = (
 };
 
 export const authenticateUser = (username: string, password: string) => {
-    const data = { username, password };
+    const data: authenticateUserProps = { username, password };
     const route = getRoute('login');
     return postRequest(route, data);
 };
@@ -102,10 +105,8 @@ export const getUserInfo = (userId?: number | string | undefined) => {
     return getRequest(route);
 };
 
-export const updateUserProfile = (
-    updatedUserInfo: Record<string, string | number | Date>
-) => {
-    const data = updatedUserInfo;
+export const updateUserProfile = (updatedUserInfo: UpdateUserInfoParams) => {
+    const data: UpdateUserInfoParams = updatedUserInfo;
     const route = getRoute('updateProfile');
     return putRequest(route, data);
 };
@@ -115,7 +116,11 @@ export const changeUserPassword = (
     new_password: string,
     confirm_new_password: string
 ) => {
-    const data = { current_password, new_password, confirm_new_password };
+    const data: UpdatePasswordParams = {
+        current_password,
+        new_password,
+        confirm_new_password,
+    };
     const route = getRoute('changePassword');
     return patchRequest(route, data);
 };

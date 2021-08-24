@@ -11,22 +11,22 @@ import { CheckBOXField, BottomLink } from 'components/LoginForm/style';
 import { AppRoutes } from 'routes';
 import { Props, FormValues } from 'components/LoginForm/types';
 
-const LoginForm: React.FC<Props> = (props: Props) => {
+const initialValues: FormValues = {
+    username: '',
+    password: '',
+    remember_me: false,
+};
+
+const validationSchema = Yup.object({
+    username: Yup.string()
+        .max(50)
+        .email('Invalid email address')
+        .required('Required'),
+    password: Yup.string().max(30).required('Required'),
+});
+
+const LoginForm: React.FC<Props> = (props) => {
     const { authenticateUser, history } = props;
-
-    const initialValues: FormValues = {
-        username: '',
-        password: '',
-        remember_me: false,
-    };
-
-    const validationSchema = Yup.object({
-        username: Yup.string()
-            .max(50)
-            .email('Invalid email address')
-            .required('Required'),
-        password: Yup.string().max(30).required('Required'),
-    });
 
     const handleSubmit = (
         values: FormValues,

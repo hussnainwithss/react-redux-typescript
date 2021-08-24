@@ -8,16 +8,17 @@ import { FilledButton } from 'elements/Button';
 import { history } from 'App';
 import { Props, FormValues } from 'components/SearchFilters/types';
 
-const SearchFilters: React.FC<Props> = (props: Props) => {
+const RELATIONSHIP_STATUES = ['Single', 'Committed', 'Married', 'Divorced'];
+const initialValues: FormValues = {
+    hometown: '',
+    work: '',
+    education: '',
+    gender: '',
+    relationship_status: '',
+};
+
+const SearchFilters: React.FC<Props> = (props) => {
     const { workFilters, educationFilters, hometownFilters } = props;
-    const RELATIONSHIP_STATUES = ['Single', 'Committed', 'Married', 'Divorced'];
-    const initialValues: FormValues = {
-        hometown: '',
-        work: '',
-        education: '',
-        gender: '',
-        relationship_status: '',
-    };
     const validationSchema = Yup.object({
         hometown: Yup.string().oneOf(hometownFilters),
         work: Yup.string().oneOf(workFilters),
@@ -25,6 +26,7 @@ const SearchFilters: React.FC<Props> = (props: Props) => {
         gender: Yup.string().oneOf(['Male', 'Female', 'Others']),
         relationship_status: Yup.string().oneOf(RELATIONSHIP_STATUES),
     });
+
     const searchFormResetHandler = () => {
         history.push(
             `/search/?search=${new URLSearchParams(history.location.search).get(

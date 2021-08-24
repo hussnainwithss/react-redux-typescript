@@ -11,22 +11,23 @@ import { FormValues, Props } from 'components/CreatePostPrompt/types';
 
 const successNotification = 'Post Created Successfully.';
 
-const CreatePostPrompt: React.FC<Props> = (props: Props) => {
-    const { setPostStatus, setShowAlert, createPost } = props;
-    const initialValues: FormValues = {
-        content: '',
-        image: null,
-    };
+const initialValues: FormValues = {
+    content: '',
+    image: null,
+};
 
-    const validationSchema = Yup.object({
-        image: Yup.mixed(),
-        content: Yup.string()
-            .when('image', {
-                is: (val: File | null) => val === null,
-                then: Yup.string().required('Post Cannot be Empty!'),
-            })
-            .max(255),
-    });
+const validationSchema = Yup.object({
+    image: Yup.mixed(),
+    content: Yup.string()
+        .when('image', {
+            is: (val: File | null) => val === null,
+            then: Yup.string().required('Post Cannot be Empty!'),
+        })
+        .max(255),
+});
+
+const CreatePostPrompt: React.FC<Props> = (props) => {
+    const { setPostStatus, setShowAlert, createPost } = props;
 
     function createPostHandler(
         values: FormValues,

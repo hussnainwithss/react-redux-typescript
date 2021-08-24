@@ -4,7 +4,7 @@ import UserCoverPicture from 'components/UserCoverPicture';
 import UserProfilePicture from 'components/UserProfilePicture';
 import { Props } from 'components/ProfileImagesSection/types';
 
-const ProfileImagesSection: React.FC<Props> = (props: Props) => {
+const ProfileImagesSection: React.FC<Props> = (props) => {
     const { user, allowEdit } = props;
     return (
         <ImagesSection>

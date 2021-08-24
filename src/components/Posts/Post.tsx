@@ -8,7 +8,7 @@ import {
 } from 'components/Posts/style';
 import { Props } from 'components/Posts/types';
 
-const Post: React.FC<Props> = (props: Props) => {
+const Post: React.FC<Props> = (props) => {
     const { post, userName, profilePicture } = props;
     return (
         <Card className='mb-3'>

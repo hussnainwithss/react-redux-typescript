@@ -22,7 +22,7 @@ const Dashboard: React.FC<Props> = ({
     fetchAuthUserPosts,
     authUser,
     authUserPosts,
-}: Props) => {
+}) => {
     const [showAlert, setShowAlert] = useState<boolean>(false);
     const [posts, setPosts] = useState<Post[]>([]);
     const [postStatus, setPostStatus] = useState<Status>({

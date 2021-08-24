@@ -9,9 +9,7 @@ interface IProps {
     max?: string;
     as?: string;
 }
-const TextField: React.FC<IProps & FieldHookConfig<string>> = (
-    props: IProps & FieldHookConfig<string>
-) => {
+const TextField: React.FC<IProps & FieldHookConfig<string>> = (props) => {
     const [field, meta] = useField(props);
     const { error, touched } = meta;
     const {

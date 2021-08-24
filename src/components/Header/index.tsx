@@ -20,7 +20,7 @@ import { Props } from 'components/Header/types';
  * Header is a template top navigation bar of user layout
  */
 
-const Header: React.FC<Props> = (props: Props) => {
+const Header: React.FC<Props> = (props) => {
     const { isAuthenticated, userPicture, userName, history } = props;
 
     return (

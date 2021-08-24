@@ -24,12 +24,32 @@ import { RootState } from 'store';
 
 const successNotification = 'User profile has been successully updated.';
 
-const UpdateProfile: React.FC<Props> = ({ user, updateUserProfile }: Props) => {
+const RELATIONSHIP_STATUES = ['Single', 'Committed', 'Married', 'Divorced'];
+const validationSchema = Yup.object({
+    first_name: Yup.string()
+        .max(15)
+        .min(3)
+        .required('First Name should not be empty.'),
+    last_name: Yup.string()
+        .max(15)
+        .min(3)
+        .required('Last Name should not be empty.'),
+    email: Yup.string().max(50).email().required('Emails should not be empty.'),
+    profile: Yup.object({
+        bio: Yup.string().max(255),
+        birthday: Yup.date().max(new Date().toDateString()),
+        work: Yup.string().max(50),
+        education: Yup.string().max(50),
+        hometown: Yup.string().max(50),
+        relationship_status: Yup.string().oneOf(RELATIONSHIP_STATUES),
+    }),
+});
+
+const UpdateProfile: React.FC<Props> = ({ user, updateUserProfile }) => {
     const [form_status, setFormStatus] = useState<Record<string, string>>({
         type: '',
         message: '',
     });
-    const RELATIONSHIP_STATUES = ['Single', 'Committed', 'Married', 'Divorced'];
     const initialValues: FormValues = {
         email: user.email,
         first_name: user.first_name,
@@ -44,29 +64,6 @@ const UpdateProfile: React.FC<Props> = ({ user, updateUserProfile }: Props) => {
             relationship_status: user.profile.relationship_status,
         },
     };
-
-    const validationSchema = Yup.object({
-        first_name: Yup.string()
-            .max(15)
-            .min(3)
-            .required('First Name should not be empty.'),
-        last_name: Yup.string()
-            .max(15)
-            .min(3)
-            .required('Last Name should not be empty.'),
-        email: Yup.string()
-            .max(50)
-            .email()
-            .required('Emails should not be empty.'),
-        profile: Yup.object({
-            bio: Yup.string().max(255),
-            birthday: Yup.date().max(new Date().toDateString()),
-            work: Yup.string().max(50),
-            education: Yup.string().max(50),
-            hometown: Yup.string().max(50),
-            relationship_status: Yup.string().oneOf(RELATIONSHIP_STATUES),
-        }),
-    });
 
     const handleSubmit = (
         values: FormValues,

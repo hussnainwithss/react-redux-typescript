@@ -8,7 +8,7 @@ const PublicRoute: React.FC<PrivatePublicRouteProps> = ({
     isAuthenticated,
     component: Component,
     ...rest
-}: any) => {
+}) => {
     return (
         <Route
             {...rest}

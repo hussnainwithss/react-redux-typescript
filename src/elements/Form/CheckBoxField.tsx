@@ -5,9 +5,7 @@ import { Form } from 'react-bootstrap';
 interface IProps {
     children: string;
 }
-const CheckBoxField: React.FC<IProps & FieldHookConfig<string>> = (
-    props: IProps & FieldHookConfig<string>
-) => {
+const CheckBoxField: React.FC<IProps & FieldHookConfig<string>> = (props) => {
     const [field, meta] = useField(props);
     const { id, name, className, children } = props;
     const { touched, error } = meta;

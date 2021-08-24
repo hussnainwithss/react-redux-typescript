@@ -3,7 +3,7 @@ import { Accordion, Card, Row, Col } from 'react-bootstrap';
 import ContextAwareToggle from 'elements/ContextAwareToggle';
 import { Props } from 'components/UserInfoAccordian/types';
 
-const UserInfoAccordian: React.FC<Props> = (props: Props) => {
+const UserInfoAccordian: React.FC<Props> = (props) => {
     const { userInfo } = props;
     return (
         <Accordion defaultActiveKey='0'>

@@ -7,7 +7,7 @@ const ContextAwareToggle: React.FC<ContextAwareToggleProps> = ({
     children,
     eventKey,
     callback,
-}: ContextAwareToggleProps) => {
+}) => {
     const currentEventKey = useContext(AccordionContext);
 
     const decoratedOnClick = useAccordionToggle(

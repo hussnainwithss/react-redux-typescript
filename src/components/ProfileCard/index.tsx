@@ -5,8 +5,9 @@ import user from 'assets/img/user.png';
 import { AppRoutes } from 'routes';
 import { Props } from 'components/ProfileCard/types';
 
-const ProfileCard: React.FC<Props> = (props: Props) => {
+const ProfileCard: React.FC<Props> = (props) => {
     const { id, picture, name, hometown, age, gender, extras } = props;
+
     return (
         <Card className='mb-2'>
             <Card.Body>

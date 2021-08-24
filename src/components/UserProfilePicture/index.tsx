@@ -21,9 +21,7 @@ import {
     ProfilePictureProps,
 } from 'components/UserProfilePicture/types';
 
-const ProfilePicture: React.FC<ProfilePictureProps> = ({
-    picture,
-}: ProfilePictureProps) => {
+const ProfilePicture: React.FC<ProfilePictureProps> = ({ picture }) => {
     return (
         <ProfileImage
             src={picture || userPicture}
@@ -32,16 +30,15 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
     );
 };
 
-const UserProfilePicture: React.FC<UserProfilePictureProps> = (
-    props: UserProfilePictureProps
-) => {
+const initialValues: FormValues = { profile_picture: null };
+const validationSchema = Yup.object({
+    profile_picture: Yup.mixed().required(
+        'Please Select Profile Picture First'
+    ),
+});
+
+const UserProfilePicture: React.FC<UserProfilePictureProps> = (props) => {
     const { user, allowEdit, updateProfilePicture } = props;
-    const initialValues: FormValues = { profile_picture: null };
-    const validationSchema = Yup.object({
-        profile_picture: Yup.mixed().required(
-            'Please Select Profile Picture First'
-        ),
-    });
     const [showProfilePictureModal, setShowProfilePictureModal] =
         useState(false);
 
